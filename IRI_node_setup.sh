@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #Download required packages
 sudo add-apt-repository -y ppa:webupd8team/java
 sudo apt-get update
@@ -10,7 +9,6 @@ sudo sh -c 'echo JAVA_HOME="/usr/lib/jvm/java-8-oracle" >> /etc/environment' && 
 sudo useradd -s /usr/sbin/nologin -m iota
 sudo -u iota mkdir -p /home/iota/node /home/iota/node/ixi /home/iota/node/mainnetdb
 sudo -u iota wget -O /home/iota/node/iri-1.4.2.4.jar https://github.com/iotaledger/iri/releases/download/v1.4.2.4/iri-1.4.2.4.jar
-
 #Get RAM, create java RAM constraint flag variable
 phymem=$(awk -F":" '$1~/MemTotal/{print $2}' /proc/meminfo )
 phymem=${phymem:0:-2}
@@ -19,7 +17,6 @@ phymem=$((($phymem/1333) + ($phymem % 1333 > 0)))
 xmx="Xmx"
 xmx_end="m"
 xmx=$xmx$phymem$xmx_end
-
 #Enable IOTA node as a service
 cat << EOF | sudo tee /lib/systemd/system/iota.service
 [Unit]
@@ -60,16 +57,13 @@ MIN_RANDOM_WALKS = 1
 REMOTE_LIMIT_API="removeNeighbors, addNeighbors, interruptAttachingToTangle, attachToTangle, getNeighbors"
 NEIGHBORS = udp://94.156.128.15:14600 udp://185.181.8.149:14600
 EOF
-
 cd /tmp/
 sudo curl -O http://db.iota.partners/IOTA.partners-mainnetdb.tar.gz
 sudo -u iota tar xzfv /tmp/IOTA.partners-mainnetdb.tar.gz -C /home/iota/node/mainnetdb
 sudo rm /tmp/IOTA.partners-mainnetdb.tar.gz
 sudo service iota start
-
 #Check every 15 mins for newest IRI version
 #echo '*/15 * * * * root bash -c \"bash <(curl -s https://gist.githubusercontent.com/zoran/48482038deda9ce5898c00f78d42f801/raw)\"' | sudo tee /etc/cron.d/iri_updater > /dev/null
-
 #Install Nelson for automatic neighbors
 sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -100,7 +94,6 @@ neighbors[] = mainnet2.deviota.com/16600
 neighbors[] = mainnet3.deviota.com/16600
 neighbors[] = iotairi.tt-tec.net/16600
 EOF
-
 #Enable Nelson service
 cat << EOF | sudo tee /lib/systemd/system/nelson.service
 [Unit]
@@ -124,7 +117,6 @@ Alias=nelson.service
 EOF
 sudo systemctl daemon-reload && sudo systemctl enable nelson.service
 sudo service nelson start
-
 #Enable IOTA peer manager service
 cat << EOF | sudo tee /lib/systemd/system/iotapm.service
 [Unit]
