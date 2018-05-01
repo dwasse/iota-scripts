@@ -39,7 +39,6 @@ WantedBy=multi-user.target
 Alias=iota.service
 EOF
 sudo systemctl daemon-reload && sudo systemctl enable iota.service
-
 #Configure node settings
 cat << EOF | sudo -u iota tee /home/iota/node/iota.ini
 [IRI]
